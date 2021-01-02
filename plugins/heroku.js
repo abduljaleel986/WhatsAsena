@@ -20,7 +20,7 @@ const heroku = new Heroku({
 
 let baseURI = '/apps/' + Config.HEROKU.APP_NAME;
 
-Asena.addCommand({pattern: 'restart', fromMe: true, desc: Lang.RESTART_DESC}, (async (message, match) => {
+Asena.addCommand({pattern: 'restart', fromMe: false, desc: Lang.RESTART_DESC}, (async (message, match) => {
     await message.sendMessage(Lang.RESTART_MSG);
     console.log(baseURI);
     await heroku.delete(baseURI + '/dynos').catch(async (error) => {
@@ -42,7 +42,7 @@ Asena.addCommand({pattern: 'shutdown', fromMe: true, desc: Lang.SHUTDOWN_DESC}, 
     });
 }));
 
-Asena.addCommand({pattern: 'dyno', fromMe: true, desc: Lang.DYNO_DESC}, (async (message, match) => {
+Asena.addCommand({pattern: 'dyno', fromMe: false, desc: Lang.DYNO_DESC}, (async (message, match) => {
     heroku.get('/account').then(async (account) => {
         // have encountered some issues while calling this API via heroku-client
         // so let's do it manually
@@ -70,7 +70,7 @@ Asena.addCommand({pattern: 'dyno', fromMe: true, desc: Lang.DYNO_DESC}, (async (
     });
 }));
 
-Asena.addCommand({pattern: 'setvar ?(.*)', fromMe: true, desc: Lang.SETVAR_DESC}, (async(message, match) => {
+Asena.addCommand({pattern: 'setvar ?(.*)', fromMe: false, desc: Lang.SETVAR_DESC}, (async(message, match) => {
     if (match[1] === '') return await message.sendMessage(Lang.KEY_VAL_MISSING);
     if ((varKey = match[1].split(':')[0]) && (varValue = match[1].split(':')[1])) {
         await heroku.patch(baseURI + '/config-vars', {
@@ -86,7 +86,7 @@ Asena.addCommand({pattern: 'setvar ?(.*)', fromMe: true, desc: Lang.SETVAR_DESC}
 }));
 
 
-Asena.addCommand({pattern: 'delvar ?(.*)', fromMe: true, desc: Lang.DELVAR_DESC}, (async (message, match) => {
+Asena.addCommand({pattern: 'delvar ?(.*)', fromMe: false, desc: Lang.DELVAR_DESC}, (async (message, match) => {
     if (match[1] === '') return await message.reply(Lang.KEY_VAL_MISSING);
     await heroku.get(baseURI + '/config-vars').then(async (vars) => {
         key = match[1].trim();
@@ -107,7 +107,7 @@ Asena.addCommand({pattern: 'delvar ?(.*)', fromMe: true, desc: Lang.DELVAR_DESC}
 
 }));
 
-Asena.addCommand({pattern: 'getvar ?(.*)', fromMe: true, desc: Lang.GETVAR_DESC}, (async (message, match) => {
+Asena.addCommand({pattern: 'getvar ?(.*)', fromMe: false, desc: Lang.GETVAR_DESC}, (async (message, match) => {
     if (match[1] === '') return await message.reply(Lang.KEY_VAL_MISSING);
     await heroku.get(baseURI + '/config-vars').then(async (vars) => {
         for (vr in vars) {
